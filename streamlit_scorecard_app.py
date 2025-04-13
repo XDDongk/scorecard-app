@@ -1,7 +1,7 @@
 
 import streamlit as st
 import pandas as pd
-from score_model import score_card, A, calculate_score_with_card, score_to_decision, explain_score_breakdown
+from score_model import score_card, A, calculate_score_with_card, explain_score_breakdown
 
 st.set_page_config(page_title="Credit Scorecard App", layout="centered")
 
@@ -34,11 +34,7 @@ if st.button("Calculate Score"):
     st.markdown(f"<h3 style='color:{color};'>Decision: {decision}</h3>", unsafe_allow_html=True)
     st.markdown(f"<h4>Score: <span style='color:{color};'>{score}</span></h4>", unsafe_allow_html=True)
 
-    # Breakdown explanation
+    # Breakdown explanation only
     st.markdown("### 🧮 Score Breakdown")
     breakdown = explain_score_breakdown(input_df.iloc[0], score_card)
     st.table(breakdown)
-
-    # Input summary
-    st.markdown("### 📋 Input Summary")
-    st.table(input_df)
