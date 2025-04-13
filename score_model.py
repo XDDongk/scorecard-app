@@ -1,29 +1,37 @@
 
 import pandas as pd
 
-# Simulated scorecard table (replace with your real one if needed)
+# Real scorecard table
 score_card = pd.DataFrame({
     'Variable': [
-        'RevolvingUtilizationOfUnsecuredLines', 'RevolvingUtilizationOfUnsecuredLines',
-        'NumberOfTimes90DaysLate', 'NumberOfTimes90DaysLate',
-        'NumberOfTime30-59DaysPastDueNotWorse', 'NumberOfTime30-59DaysPastDueNotWorse',
-        'age', 'age',
-        'NumberOfTime60-89DaysPastDueNotWorse', 'NumberOfTime60-89DaysPastDueNotWorse'
-    ],
+        'NumberOfTime30-59DaysPastDueNotWorse'] * 10 +
+        ['NumberOfTime60-89DaysPastDueNotWorse'] * 10 +
+        ['NumberOfTimes90DaysLate'] * 10 +
+        ['RevolvingUtilizationOfUnsecuredLines'] * 5 +
+        ['age'] * 6,
     'Binning': [
-        '(-inf, 0.1]', '(0.1, inf)',
-        '(-inf, 0.5]', '(0.5, inf)',
-        '(-inf, 0.5]', '(0.5, inf)',
-        '(-inf, 45]', '(45, inf)',
-        '(-inf, 0.5]', '(0.5, inf)'
+        '(-inf, 1.0]', '(1.0, 2.0]', '(7.0, 8.0]', '(8.0, 9.0]', '(2.0, 3.0]',
+        '(3.0, 4.0]', '(4.0, 5.0]', '(6.0, 7.0]', '(5.0, 6.0]', '(9.0, inf]',
+        '(8.0, 9.0]', '(-inf, 1.0]', '(7.0, 8.0]', '(6.0, 7.0]', '(1.0, 2.0]',
+        '(2.0, 3.0]', '(3.0, 4.0]', '(4.0, 5.0]', '(5.0, 6.0]', '(9.0, inf]',
+        '(-inf, 1.0]', '(1.0, 2.0]', '(9.0, inf]', '(2.0, 3.0]', '(5.0, 6.0]',
+        '(4.0, 5.0]', '(3.0, 4.0]', '(7.0, 8.0]', '(8.0, 9.0]', '(6.0, 7.0]',
+        '(-0.00099163, 0.0314]', '(0.0314, 0.107]', '(0.107, 0.31]',
+        '(0.31, 0.736]', '(0.736, 11.385]',
+        '(70.0, inf]', '(60.0, 70.0]', '(50.0, 60.0]', '(40.0, 50.0]',
+        '(25.0, 40.0]', '(-inf, 25.0]'
     ],
-    'Score': [50, 10, 30, -20, 25, -15, 20, 40, 20, -10]
+    'Score': [
+        12, -81, -86, -96, -102, -118, -123, -135, -138, -175,
+        89, 3, -101, -105, -107, -116, -125, -128, -149, -190,
+        8, -129, -137, -144, -144, -154, -164, -169, -178, -196,
+        97, 81, 45, -8, -71,
+        40, 24, 3, -8, -16, -1
+    ]
 })
 
-# Base score (your model offset score, e.g. A = 600)
 A = 600
 
-# Convert bin strings to match range
 def str_to_float(s):
     if s == '-inf':
         return -999999999.0
@@ -47,7 +55,6 @@ def map_value_to_bin(value, feature_bins):
             return row['Binning']
     return None
 
-# Row-wise scoring
 def map_to_score(row, score_card):
     score = 0
     for col in score_card['Variable'].unique():
@@ -59,18 +66,17 @@ def map_to_score(row, score_card):
             score += matched['Score'].values[0]
     return score
 
-# Apply to DataFrame
 def calculate_score_with_card(df, score_card, A):
     df = df.copy()
     df['score'] = df.apply(map_to_score, axis=1, score_card=score_card)
     df['score'] = df['score'] + A
     return df
 
-# Decision logic
 def score_to_decision(score):
-    if score < 500:
+    if score < 530:
         return 'Reject'
-    elif score <= 650:
+    elif score <= 620:
         return 'Manual Review'
     else:
         return 'Accept'
+}
