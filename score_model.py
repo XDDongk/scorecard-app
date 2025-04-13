@@ -79,4 +79,3 @@ def score_to_decision(score):
         return 'Manual Review'
     else:
         return 'Accept'
-}
