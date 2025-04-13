@@ -91,3 +91,15 @@ def explain_score_breakdown(row, score_card):
         score = matched['Score'].values[0] if not matched.empty else 0
         breakdown.append({'Variable': col, 'Binning': bin_label, 'Score': score})
     return pd.DataFrame(breakdown)
+
+
+def explain_score_breakdown(row, score_card):
+    breakdown = []
+    for col in score_card['Variable'].unique():
+        bins = score_card[score_card['Variable'] == col]
+        value = row[col]
+        bin_label = map_value_to_bin(value, bins)
+        matched = bins[bins['Binning'] == bin_label]
+        score = matched['Score'].values[0] if not matched.empty else 0
+        breakdown.append({'Variable': col, 'Input': value, 'Score': score})
+    return pd.DataFrame(breakdown)
